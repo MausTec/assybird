@@ -1,23 +1,48 @@
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import DeviceProvider, { DeviceContext } from '@maustec/react-edge-o-matic'
+import Game from "./Game";
+
+const ConnectionForm = ({state, ip = "", onConnect}) => {
+    const [val, setVal] = useState(ip);
+
+    const handleChange = (e) => {
+        e.preventDefault();
+        setVal(e.target.value);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onConnect(val);
+    }
+
+    const disabled = state !== "disconnected"
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <input disabled={disabled} type={'text'} placeholder={"192.168.x.x"} value={val} onChange={handleChange} />
+            <button disabled={disabled} type={'submit'}>Connect!</button>
+        </form>
+    )
+}
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <DeviceProvider>
+        <DeviceContext.Consumer>
+          { ({ state, ip, connect, config: { sensitivity_threshold } }) => (
+              state === 'connected' ? <Game arousalLimit={sensitivity_threshold} /> : <header className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <p>
+                  Device Address, please.
+                </p>
+                <ConnectionForm state={state} ip={ip} onConnect={connect} />
+              </header>
+          )}
+        </DeviceContext.Consumer>
+      </DeviceProvider>
     </div>
   );
 }

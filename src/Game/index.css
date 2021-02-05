@@ -1,0 +1,53 @@
+.debug {
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    margin: 0;
+    opacity: 0.5;
+}
+
+.game-area {
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #282c34;
+    color: white;
+}
+
+.pipe {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    background-color: rgba(255, 128,2550, 0.1);
+}
+
+.pipe-top {
+    background-color: rgba(255, 255, 128, 0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.pipe-bottom {
+    background-color: rgba(255, 255, 128, 0.1);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.bird {
+    background-color: rgba(128, 255, 255, 0.1);
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    right: 90%;
+}
