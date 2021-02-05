@@ -7,6 +7,8 @@ import Bird from "./Bird";
 class Game extends Component {
     static contextType = ReadingsContext;
     FPS = 30;
+    BirdRight = 15;
+    PipeCollisionThreshold = 1;
 
     constructor(props) {
         super(props);
@@ -15,6 +17,7 @@ class Game extends Component {
             score: 0,
             speed: 1,
             ticks: 0,
+            birdHeight: 0,
             pipes: []
         }
 
@@ -30,6 +33,7 @@ class Game extends Component {
             speed: 1,
             score: 0,
             ticks: 0,
+            birdHeight: 0,
             pipes: []
         });
 
@@ -75,8 +79,34 @@ class Game extends Component {
         })
     }
 
-    calculateCollision() {
+    calculateBirdHeight() {
+        const { lastReading } = this.context
+        const { arousalLimit } = this.props
+        const { arousal } = lastReading
 
+        return Math.floor((arousal / arousalLimit) * 100)
+    }
+
+    calculateCollision() {
+        const height = this.calculateBirdHeight();
+        const _this = this;
+
+        const pipes = this.state.pipes.filter(pipe => (
+            this.BirdRight - pipe.position === 0
+        ));
+
+        pipes.forEach(pipe => {
+            if (Math.abs(height - pipe.height) > (pipe.gap / 2)) {
+                _this.setState({
+                    birdHeight: height
+                });
+                _this.endGame();
+            } else {
+                const score = _this.state.score + 1;
+                const speed = Math.max(1, Math.min(Math.ceil(score / 10), 15));
+                _this.setState({ score, speed });
+            }
+        })
     }
 
     tick() {
@@ -101,9 +131,7 @@ class Game extends Component {
 
     render() {
         const { lastReading } = this.context
-        const { arousalLimit } = this.props
-        const { arousal } = lastReading
-        const birdHeight = Math.floor((arousal / arousalLimit) * 100)
+        const birdHeight = this.state.birdHeight || this.calculateBirdHeight()
 
         return (<main className={'game-area'}>
             <pre className={'debug'}>
@@ -115,6 +143,10 @@ class Game extends Component {
             <Pipes pipes={this.state.pipes} />
             <Bird height={birdHeight} />
 
+            { this.state.started && <div className={'scoreboard'}>
+                <div className={'score'}>Score: { this.state.score }</div>
+                <div className={'speed'}>Speed: { this.state.speed }</div>
+            </div> }
             { !this.state.started && <a href={'#'} onClick={this.handleStartClick}>Start!</a> }
         </main>)
     }
