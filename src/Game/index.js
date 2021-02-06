@@ -13,13 +13,19 @@ class Game extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.defaultState = {
+            started: false,
+            gameOver: false,
+            crashed: false,
+            birdCaptured: false,
             score: 0,
             speed: 1,
             ticks: 0,
             birdHeight: 0,
             pipes: []
         }
+
+        this.state = { ...this.defaultState }
 
         this.tickInterval = null;
 
@@ -28,20 +34,13 @@ class Game extends Component {
     }
 
     startGame() {
-        this.setState({
-            started: true,
-            speed: 1,
-            score: 0,
-            ticks: 0,
-            birdHeight: 0,
-            pipes: []
-        });
+        this.setState({ ...this.defaultState, started: true });
 
         this.tickInterval = setInterval(this.tick, 1000 / this.FPS);
     }
 
-    endGame() {
-        this.setState({ started: false });
+    endGame(addtlState = {}) {
+        this.setState({ gameOver: true, ...addtlState });
         clearInterval(this.tickInterval);
     }
 
@@ -84,12 +83,28 @@ class Game extends Component {
         const { arousalLimit } = this.props
         const { arousal } = lastReading
 
-        return Math.floor((arousal / arousalLimit) * 100)
+        const height = Math.floor((arousal / arousalLimit) * 100)
+
+        if (!this.state.birdCaptured) {
+            if (height > 50) {
+                this.setState({birdCaptured: true});
+            } else {
+                return 50;
+            }
+        }
+
+        return height;
     }
 
     calculateCollision() {
         const height = this.calculateBirdHeight();
         const _this = this;
+
+        if (height >= 100 || height <= 0) {
+            this.endGame({
+                birdHeight: 0.1
+            });
+        }
 
         const pipes = this.state.pipes.filter(pipe => (
             this.BirdRight - pipe.position === 0
@@ -97,10 +112,10 @@ class Game extends Component {
 
         pipes.forEach(pipe => {
             if (Math.abs(height - pipe.height) > (pipe.gap / 2)) {
-                _this.setState({
-                    birdHeight: height
+                _this.endGame({
+                    birdHeight: height,
+                    crashed: true
                 });
-                _this.endGame();
             } else {
                 const score = _this.state.score + 1;
                 const speed = Math.max(1, Math.min(Math.ceil(score / 10), 15));
@@ -116,11 +131,10 @@ class Game extends Component {
         this.removePipes();
 
         if (ticks % Math.floor(this.FPS / (this.state.speed * 0.5)) === 0) {
-            this.addPipe();
+            this.state.birdCaptured && this.addPipe();
         }
 
         this.calculateCollision();
-
         this.setState({ticks});
     }
 
@@ -131,7 +145,7 @@ class Game extends Component {
 
     render() {
         const { lastReading } = this.context
-        const birdHeight = this.state.birdHeight || this.calculateBirdHeight()
+        const birdHeight = this.state.started ? (this.state.birdHeight || this.calculateBirdHeight()) : 50;
 
         return (<main className={'game-area'}>
             <pre className={'debug'}>
@@ -141,11 +155,19 @@ class Game extends Component {
             </pre>
 
             <Pipes pipes={this.state.pipes} />
-            <Bird height={birdHeight} />
+            <Bird height={birdHeight}
+                  idle={!this.state.started}
+                  splat={this.state.crashed}
+                  dead={this.state.gameOver} />
 
             { this.state.started && <div className={'scoreboard'}>
                 <div className={'score'}>Score: { this.state.score }</div>
                 <div className={'speed'}>Speed: { this.state.speed }</div>
+            </div> }
+
+            { this.state.gameOver && <div className={'game-over'}>
+                <div>Game Over :(</div>
+                <a href={'#'} onClick={this.handleStartClick}>Start!</a>
             </div> }
             { !this.state.started && <a href={'#'} onClick={this.handleStartClick}>Start!</a> }
         </main>)

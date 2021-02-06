@@ -29,7 +29,7 @@
 }
 
 .pipe-top {
-    background-color: rgba(255, 255, 128, 0.1);
+    background-color: rgba(255, 255, 128, 0.8);
     position: absolute;
     top: 0;
     left: 0;
@@ -37,7 +37,7 @@
 }
 
 .pipe-bottom {
-    background-color: rgba(255, 255, 128, 0.1);
+    background-color: rgba(255, 255, 128, 0.8);
     position: absolute;
     bottom: 0;
     left: 0;
@@ -45,11 +45,28 @@
 }
 
 .bird {
-    background-color: rgba(128, 255, 255, 0.1);
     position: absolute;
     width: 60px;
-    height: 60px;
     right: 85%;
+    transition: bottom 0.2s ease;
+    transform: translateY(60px);
+}
+
+.bird.zooming {
+    transform: translateY(60px) rotate(35deg);
+}
+
+.bird.idle {
+    animation: idle-bird infinite 2s alternate;
+}
+
+@keyframes idle-bird {
+    from {
+        transform: translateY(60px);
+    }
+    to {
+        transform: translateY(5px);
+    }
 }
 
 .scoreboard {

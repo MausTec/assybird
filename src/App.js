@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
+import logo from './assets/assy-drift-big.png';
 import './App.css';
 import DeviceProvider, { DeviceContext } from '@maustec/react-edge-o-matic'
 import Game from "./Game";
@@ -22,7 +22,7 @@ const ConnectionForm = ({state, ip = "", onConnect}) => {
     return (
         <form onSubmit={handleSubmit}>
             <input disabled={disabled} type={'text'} placeholder={"192.168.x.x"} value={val} onChange={handleChange} />
-            <button disabled={disabled} type={'submit'}>Connect!</button>
+            <button disabled={disabled} type={'submit'}>{ disabled ? "Connecting..." : "Connect!" }</button>
         </form>
     )
 }

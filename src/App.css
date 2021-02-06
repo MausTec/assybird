@@ -9,12 +9,11 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: App-logo-spin infinite 3s alternate-reverse;
   }
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -22,6 +21,9 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+
+  background: linear-gradient( 135deg, rgba(48, 140, 179, .6), rgba(48, 140, 179, .1)), linear-gradient( 180deg, transparent, rgba(0, 0, 0, .4)), linear-gradient( 60deg, rgba(32, 93, 119, .1), rgba(32, 93, 119, .1) 50%, rgba(32, 93, 119, 0) 50.1%), #000;
+  background-attachment: fixed;
 }
 
 .App-link {
@@ -30,10 +32,10 @@
 
 @keyframes App-logo-spin {
   from {
-    transform: rotate(0deg);
+    transform: translateY(-15%);
   }
   to {
-    transform: rotate(360deg);
+    transform: translateY(5%);
   }
 }
 
@@ -44,7 +46,7 @@ input, button {
   box-sizing: border-box;
 
   background-color: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
   color: inherit;
   padding: 0.5rem 1rem;
   text-align: center;
