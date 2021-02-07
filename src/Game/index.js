@@ -25,10 +25,12 @@ class Game extends Component {
             ticks: 0,
             birdHeight: 0,
             virtualArousal: 50,
+            konami: false,
+            konamiIndex: 0,
             pipes: []
         }
 
-        this.state = { ...this.defaultState }
+        this.state = {...this.defaultState}
 
         this.tickInterval = null;
         this.playfield = null;
@@ -39,19 +41,25 @@ class Game extends Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
+    componentDidMount() {
+        if (this.playfield) {
+            this.playfield.focus();
+        }
+    }
+
     startGame() {
-        this.setState({ ...this.defaultState, started: true });
+        this.setState({...this.defaultState, started: true});
         this.lastPipeRender = 0;
         this.tickInterval = setInterval(this.tick, 1000 / this.FPS);
     }
 
     endGame(addtlState = {}) {
-        this.setState({ gameOver: true, ...addtlState });
+        this.setState({gameOver: true, ...addtlState});
         clearInterval(this.tickInterval);
     }
 
     addPipe() {
-        const { speed, ticks } = this.state;
+        const {speed, ticks} = this.state;
         const gap = (20 - speed) + Math.floor(Math.random() * (10 - speed));
         const height = 50 + Math.floor(25 - (Math.random() * 50));
 
@@ -87,14 +95,14 @@ class Game extends Component {
     }
 
     calculateBirdHeight() {
-        const { arousalLimit, offlineMode } = this.props
+        const {arousalLimit, offlineMode} = this.props
         let height;
 
         if (offlineMode) {
             height = this.state.virtualArousal;
         } else {
-            const { lastReading } = this.context
-            const { arousal } = lastReading
+            const {lastReading} = this.context
+            const {arousal} = lastReading
             height = Math.floor((arousal / arousalLimit) * 100)
 
         }
@@ -133,7 +141,7 @@ class Game extends Component {
             } else {
                 const score = _this.state.score + 1;
                 const speed = Math.max(1, Math.min(1 + (score / 20), 2));
-                _this.setState({ score, speed });
+                _this.setState({score, speed});
             }
         })
     }
@@ -168,13 +176,36 @@ class Game extends Component {
     }
 
     handleKeyDown(e) {
+        const konami = [
+            38, 38,
+            40, 40,
+            37, 39,
+            37, 39,
+            66, 65,
+            13
+        ]
+
+        if (e.keyCode === konami[this.state.konamiIndex]) {
+            console.log("Great!", e.keyCode);
+            if (this.state.konamiIndex >= konami.length - 1) {
+                alert('the fuck you want, a cookie?')
+                this.setState({konamiIndex: 0, konami: true});
+            } else {
+                this.setState({konamiIndex: this.state.konamiIndex + 1});
+            }
+        } else {
+            if (this.state.konamiIndex > 0) {
+                this.setState({konamiIndex: 0});
+            }
+        }
+
         if (!this.props.offlineMode) return;
 
         // Space Bar
         if (e.keyCode === 32) {
             e.preventDefault();
             if (!this.state.flapDown) {
-                let { virtualArousal } = this.state;
+                let {virtualArousal} = this.state;
                 virtualArousal += (20 * this.state.speed);
                 this.setState({virtualArousal})
             }
@@ -182,33 +213,40 @@ class Game extends Component {
     }
 
     render() {
-        const { lastReading } = this.context
+        const {lastReading} = this.context
         const birdHeight = this.state.started ? (this.state.birdHeight || this.calculateBirdHeight()) : 50;
 
-        return (<main ref={r => this.playfield = r} className={'game-area'} tabIndex={0} onKeyDown={this.handleKeyDown}>
-            <pre className={'debug'}>
-                { JSON.stringify(lastReading, undefined, 2) }
-                <br />
-                { JSON.stringify({...this.state, props: this.props}, undefined, 2) }
-            </pre>
+        return (
+            <main ref={r => this.playfield = r}
+                  className={'game-area'}
+                  tabIndex={0}
+                  onKeyDown={this.handleKeyDown}
+                  style={{ opacity: 1 - (this.state.konamiIndex * 0.04) }}
+            >
+                {this.state.konami && <pre className={'debug'}>
+                {JSON.stringify(lastReading, undefined, 2)}
+                    <br/>
+                    {JSON.stringify({...this.state, props: this.props}, undefined, 2)}
+            </pre>}
 
-            <Pipes pipes={this.state.pipes} />
-            <Bird height={birdHeight}
-                  idle={!this.state.started}
-                  splat={this.state.crashed}
-                  dead={this.state.gameOver} />
+                <Pipes pipes={this.state.pipes}/>
+                <Bird height={birdHeight}
+                      idle={!this.state.started}
+                      splat={this.state.crashed}
+                      dead={this.state.gameOver}/>
 
-            { this.state.started && <div className={'scoreboard'}>
-                <div className={'score'}>Score: { this.state.score }</div>
-                <div className={'speed'}>Speed: { this.state.speed }</div>
-            </div> }
+                {this.state.started && <div className={'scoreboard'}>
+                    <div className={'score'}>Score: {this.state.score}</div>
+                    <div className={'speed'}>Speed: {this.state.speed}</div>
+                </div>}
 
-            { this.state.gameOver && <div className={'game-over'}>
-                <div>Game Over :(</div>
-                <a href={'#'} onClick={this.handleStartClick}>Start!</a>
-            </div> }
-            { !this.state.started && <a href={'#'} onClick={this.handleStartClick}>Start!</a> }
-        </main>)
+                {this.state.gameOver && <div className={'game-over'}>
+                    <div>Game Over :(</div>
+                    <a href={'#'} onClick={this.handleStartClick}>Start!</a>
+                </div>}
+                {!this.state.started && <a href={'#'} onClick={this.handleStartClick}>Start!</a>}
+            </main>
+        )
     }
 }
 

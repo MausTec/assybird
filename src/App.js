@@ -5,7 +5,7 @@ import DeviceProvider, { DeviceContext } from '@maustec/react-edge-o-matic'
 import Game from "./Game";
 
 const ConnectionForm = ({state, ip = "", onConnect}) => {
-    const [val, setVal] = useState(ip);
+    const [val, setVal] = useState(ip || "");
 
     const handleChange = (e) => {
         e.preventDefault();
