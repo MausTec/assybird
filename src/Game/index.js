@@ -8,6 +8,8 @@ class Game extends Component {
     static contextType = ReadingsContext;
     FPS = 30;
     BirdRight = 15;
+    MaxScore = 20;
+    DecayCoefficient = 0.98;
     PipeCollisionThreshold = 1;
 
     constructor(props) {
@@ -22,7 +24,6 @@ class Game extends Component {
             speed: 1,
             ticks: 0,
             birdHeight: 0,
-            flapDown: false,
             virtualArousal: 50,
             pipes: []
         }
@@ -31,16 +32,16 @@ class Game extends Component {
 
         this.tickInterval = null;
         this.playfield = null;
+        this.lastPipeRender = 0;
 
         this.handleStartClick = this.handleStartClick.bind(this);
         this.tick = this.tick.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.handleKeyUp = this.handleKeyUp.bind(this);
     }
 
     startGame() {
         this.setState({ ...this.defaultState, started: true });
-
+        this.lastPipeRender = 0;
         this.tickInterval = setInterval(this.tick, 1000 / this.FPS);
     }
 
@@ -144,17 +145,16 @@ class Game extends Component {
         this.shiftPipes(this.state.speed);
         this.removePipes();
 
-        if (ticks % Math.floor(this.FPS / (this.state.speed * 0.5)) === 0) {
+        const pipeRenderInterval = Math.floor(this.FPS / (this.state.speed * 0.5))
+        if (ticks - this.lastPipeRender > pipeRenderInterval) {
+            this.lastPipeRender = ticks;
             this.state.birdCaptured && this.addPipe();
         }
 
         if (this.props.offlineMode) {
             this.playfield && this.playfield.focus();
-
-            virtualArousal = Math.floor(virtualArousal * 0.99 );
-
-            if (this.state.flapDown) {
-                virtualArousal += Math.floor(2 * this.state.speed);
+            if (this.state.birdCaptured) {
+                virtualArousal = Math.floor(virtualArousal * 0.98);
             }
         }
 
@@ -174,19 +174,9 @@ class Game extends Component {
         if (e.keyCode === 32) {
             e.preventDefault();
             if (!this.state.flapDown) {
-                this.setState({flapDown: true})
-            }
-        }
-    }
-
-    handleKeyUp(e) {
-        if (!this.props.offlineMode) return;
-
-        // Space Bar
-        if (e.keyCode === 32) {
-            e.preventDefault();
-            if (this.state.flapDown) {
-                this.setState({ flapDown: false });
+                let { virtualArousal } = this.state;
+                virtualArousal += (20 * this.state.speed);
+                this.setState({virtualArousal})
             }
         }
     }
@@ -195,7 +185,7 @@ class Game extends Component {
         const { lastReading } = this.context
         const birdHeight = this.state.started ? (this.state.birdHeight || this.calculateBirdHeight()) : 50;
 
-        return (<main ref={r => this.playfield = r} className={'game-area'} tabIndex={0} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
+        return (<main ref={r => this.playfield = r} className={'game-area'} tabIndex={0} onKeyDown={this.handleKeyDown}>
             <pre className={'debug'}>
                 { JSON.stringify(lastReading, undefined, 2) }
                 <br />
