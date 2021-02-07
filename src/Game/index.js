@@ -22,6 +22,8 @@ class Game extends Component {
             speed: 1,
             ticks: 0,
             birdHeight: 0,
+            flapDown: 0,
+            virtualArousal: 50,
             pipes: []
         }
 
@@ -31,6 +33,8 @@ class Game extends Component {
 
         this.handleStartClick = this.handleStartClick.bind(this);
         this.tick = this.tick.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleKeyUp = this.handleKeyUp.bind(this);
     }
 
     startGame() {
@@ -79,11 +83,17 @@ class Game extends Component {
     }
 
     calculateBirdHeight() {
-        const { lastReading } = this.context
-        const { arousalLimit } = this.props
-        const { arousal } = lastReading
+        const { arousalLimit, offlineMode } = this.props
+        let height;
 
-        const height = Math.floor((arousal / arousalLimit) * 100)
+        if (offlineMode) {
+            height = this.state.virtualArousal;
+        } else {
+            const { lastReading } = this.context
+            const { arousal } = lastReading
+            height = Math.floor((arousal / arousalLimit) * 100)
+
+        }
 
         if (!this.state.birdCaptured) {
             if (height > 50) {
@@ -126,6 +136,7 @@ class Game extends Component {
 
     tick() {
         const ticks = this.state.ticks + 1;
+        let virtualArousal = this.state.virtualArousal;
 
         this.shiftPipes(this.state.speed);
         this.removePipes();
@@ -134,8 +145,12 @@ class Game extends Component {
             this.state.birdCaptured && this.addPipe();
         }
 
+        if (this.props.offlineMode) {
+            virtualArousal = Math.floor(virtualArousal * 0.99);
+        }
+
         this.calculateCollision();
-        this.setState({ticks});
+        this.setState({ticks, virtualArousal});
     }
 
     handleStartClick(e) {
@@ -143,11 +158,41 @@ class Game extends Component {
         this.startGame();
     }
 
+    handleKeyDown(e) {
+        if (!this.props.offlineMode) return;
+
+        // Space Bar
+        if (e.keyCode === 32) {
+            e.preventDefault();
+            if (!this.state.flapDown) {
+                this.setState({flapDown: Date.now()})
+            }
+        }
+    }
+
+    handleKeyUp(e) {
+        if (!this.props.offlineMode) return;
+
+        // Space Bar
+        if (e.keyCode === 32) {
+            e.preventDefault();
+            if (this.state.flapDown) {
+                const flapTime = Date.now() - this.state.flapDown;
+                this.setState({ flapDown: 0 });
+
+                const flapArousal = Math.floor(flapTime / 10);
+                this.setState({
+                    virtualArousal: this.state.virtualArousal + flapArousal
+                })
+            }
+        }
+    }
+
     render() {
         const { lastReading } = this.context
         const birdHeight = this.state.started ? (this.state.birdHeight || this.calculateBirdHeight()) : 50;
 
-        return (<main className={'game-area'}>
+        return (<main className={'game-area'} tabIndex={0} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
             <pre className={'debug'}>
                 { JSON.stringify(lastReading, undefined, 2) }
                 <br />

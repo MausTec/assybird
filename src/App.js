@@ -28,6 +28,21 @@ const ConnectionForm = ({state, ip = "", onConnect}) => {
 }
 
 function App() {
+    const [ offlineMode, setOfflineMode ] = useState(false);
+
+    const handleOfflineClick = (e) => {
+        e.preventDefault();
+        setOfflineMode(true);
+    }
+
+    if (offlineMode) {
+        return (
+            <div className={"App"}>
+                <Game arousalLimit={100} offlineMode />
+            </div>
+        )
+    }
+
   return (
     <div className="App">
       <DeviceProvider>
@@ -39,6 +54,9 @@ function App() {
                   Device Address, please.
                 </p>
                 <ConnectionForm state={state} ip={ip} onConnect={connect} />
+                <div className={'use-offline'}>
+                    <a href={'#'} onClick={handleOfflineClick}>Play with Keyboard</a>
+                </div>
               </header>
           )}
         </DeviceContext.Consumer>
