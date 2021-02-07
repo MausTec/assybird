@@ -22,7 +22,7 @@ class Game extends Component {
             speed: 1,
             ticks: 0,
             birdHeight: 0,
-            flapDown: 0,
+            flapDown: false,
             virtualArousal: 50,
             pipes: []
         }
@@ -30,6 +30,7 @@ class Game extends Component {
         this.state = { ...this.defaultState }
 
         this.tickInterval = null;
+        this.playfield = null;
 
         this.handleStartClick = this.handleStartClick.bind(this);
         this.tick = this.tick.bind(this);
@@ -49,11 +50,12 @@ class Game extends Component {
     }
 
     addPipe() {
-        const { speed } = this.state;
+        const { speed, ticks } = this.state;
         const gap = (20 - speed) + Math.floor(Math.random() * (10 - speed));
         const height = 50 + Math.floor(25 - (Math.random() * 50));
 
         let pipe = {
+            id: ticks,
             height,
             gap,
             position: 100,
@@ -74,6 +76,7 @@ class Game extends Component {
         let pipes = [...this.state.pipes];
 
         pipes.forEach(p => {
+            p.lastPosition = p.position;
             p.position -= speed;
         })
 
@@ -117,7 +120,7 @@ class Game extends Component {
         }
 
         const pipes = this.state.pipes.filter(pipe => (
-            this.BirdRight - pipe.position === 0
+            pipe.lastPosition > this.BirdRight && pipe.position <= this.BirdRight
         ));
 
         pipes.forEach(pipe => {
@@ -128,7 +131,7 @@ class Game extends Component {
                 });
             } else {
                 const score = _this.state.score + 1;
-                const speed = Math.max(1, Math.min(Math.ceil(score / 10), 15));
+                const speed = Math.max(1, Math.min(1 + (score / 20), 2));
                 _this.setState({ score, speed });
             }
         })
@@ -146,7 +149,13 @@ class Game extends Component {
         }
 
         if (this.props.offlineMode) {
-            virtualArousal = Math.floor(virtualArousal * 0.99);
+            this.playfield && this.playfield.focus();
+
+            virtualArousal = Math.floor(virtualArousal * 0.99 );
+
+            if (this.state.flapDown) {
+                virtualArousal += Math.floor(2 * this.state.speed);
+            }
         }
 
         this.calculateCollision();
@@ -165,7 +174,7 @@ class Game extends Component {
         if (e.keyCode === 32) {
             e.preventDefault();
             if (!this.state.flapDown) {
-                this.setState({flapDown: Date.now()})
+                this.setState({flapDown: true})
             }
         }
     }
@@ -177,13 +186,7 @@ class Game extends Component {
         if (e.keyCode === 32) {
             e.preventDefault();
             if (this.state.flapDown) {
-                const flapTime = Date.now() - this.state.flapDown;
-                this.setState({ flapDown: 0 });
-
-                const flapArousal = Math.floor(flapTime / 10);
-                this.setState({
-                    virtualArousal: this.state.virtualArousal + flapArousal
-                })
+                this.setState({ flapDown: false });
             }
         }
     }
@@ -192,7 +195,7 @@ class Game extends Component {
         const { lastReading } = this.context
         const birdHeight = this.state.started ? (this.state.birdHeight || this.calculateBirdHeight()) : 50;
 
-        return (<main className={'game-area'} tabIndex={0} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
+        return (<main ref={r => this.playfield = r} className={'game-area'} tabIndex={0} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
             <pre className={'debug'}>
                 { JSON.stringify(lastReading, undefined, 2) }
                 <br />
