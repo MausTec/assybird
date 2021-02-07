@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.dc8f37fa.chunk.css",
+    "main.js": "/static/js/main.bb608a60.chunk.js",
+    "main.js.map": "/static/js/main.bb608a60.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.bd32c180.js",
+    "runtime-main.js.map": "/static/js/runtime-main.bd32c180.js.map",
+    "static/js/2.80a5a252.chunk.js": "/static/js/2.80a5a252.chunk.js",
+    "static/js/2.80a5a252.chunk.js.map": "/static/js/2.80a5a252.chunk.js.map",
+    "static/js/3.4cd3e41e.chunk.js": "/static/js/3.4cd3e41e.chunk.js",
+    "static/js/3.4cd3e41e.chunk.js.map": "/static/js/3.4cd3e41e.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.dc8f37fa.chunk.css.map": "/static/css/main.dc8f37fa.chunk.css.map",
+    "static/js/2.80a5a252.chunk.js.LICENSE.txt": "/static/js/2.80a5a252.chunk.js.LICENSE.txt",
+    "static/media/anal-beads.2ac61e6e.png": "/static/media/anal-beads.2ac61e6e.png",
+    "static/media/assy-drift-big.0c8edf48.png": "/static/media/assy-drift-big.0c8edf48.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.bd32c180.js",
+    "static/js/2.80a5a252.chunk.js",
+    "static/css/main.dc8f37fa.chunk.css",
+    "static/js/main.bb608a60.chunk.js"
+  ]
+}
