@@ -3,6 +3,7 @@ import {ReadingsContext} from "@maustec/react-edge-o-matic";
 import './index.css'
 import Pipes from "./Pipes";
 import Bird from "./Bird";
+import backgroundImage from '../assets/assy-background.png'
 
 class Game extends Component {
     static contextType = ReadingsContext;
@@ -215,13 +216,14 @@ class Game extends Component {
     render() {
         const {lastReading} = this.context
         const birdHeight = this.state.started ? (this.state.birdHeight || this.calculateBirdHeight()) : 50;
+        const background = `url(${backgroundImage}) -${this.state.ticks * 2}px center, linear-gradient(315deg, #d9e4f5 0%, #f5e3e6 74%)`
 
         return (
             <main ref={r => this.playfield = r}
                   className={'game-area'}
                   tabIndex={0}
                   onKeyDown={this.handleKeyDown}
-                  style={{ opacity: 1 - (this.state.konamiIndex * 0.04) }}
+                  style={{ opacity: 1 - (this.state.konamiIndex * 0.04), background }}
             >
                 {this.state.konami && <pre className={'debug'}>
                 {JSON.stringify(lastReading, undefined, 2)}
@@ -233,6 +235,7 @@ class Game extends Component {
                 <Bird height={birdHeight}
                       idle={!this.state.started}
                       splat={this.state.crashed}
+                      speed={this.state.speed}
                       dead={this.state.gameOver}/>
 
                 {this.state.started && <div className={'scoreboard'}>

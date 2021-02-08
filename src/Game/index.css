@@ -53,7 +53,7 @@
 }
 
 .bird.zooming {
-    transform: translateY(60px) rotate(35deg);
+    transform: translateY(60px);
 }
 
 .bird.idle {

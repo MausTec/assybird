@@ -6,7 +6,7 @@ import flatBird from '../assets/assy-go-smash.png'
 
 let floatTimer = null;
 
-const Bird = ({ height, idle, dead, splat }) => {
+const Bird = ({ height, idle, dead, splat, speed }) => {
     const bottom = height + "%";
     const [rising, setRising] = useState(false);
     const prevHeight = useRef(height);
@@ -27,9 +27,14 @@ const Bird = ({ height, idle, dead, splat }) => {
         prevHeight.current = height;
     }, [height]);
 
+    let transform;
+    if (!idle) {
+        transform = `rotate(${30 + (60 * (speed - 1))}deg)`
+    }
+
     return (
         <div className={'bird' + (idle ? ' idle' : ' zooming')} style={{ bottom }}>
-            <img src={splat ? flatBird : dead ? deadBird : rising ? risingBird : fallingBird} width={60} height={148} />
+            <img src={splat ? flatBird : dead ? deadBird : rising ? risingBird : fallingBird} width={60} height={148} style={{ transform }}/>
         </div>
     )
 }
