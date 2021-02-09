@@ -54,13 +54,18 @@
 .bird {
     position: absolute;
     width: 60px;
+    height: 60px;
     right: 85%;
     transition: bottom 0.2s ease;
-    transform: translateY(60px);
 }
 
-.bird.zooming {
-    transform: translateY(60px);
+.bird img {
+    transform-origin: 30px 30px;
+}
+
+.bird.bird-debug {
+    transition: none;
+    border: 2px solid orchid;
 }
 
 .bird.idle {

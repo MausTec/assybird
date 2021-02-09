@@ -38,6 +38,7 @@ class Game extends Component {
         this.tickInterval = null;
         this.playfield = null;
         this.lastPipeRender = 0;
+        this.birdRef = null;
 
         this.handleStartClick = this.handleStartClick.bind(this);
         this.tick = this.tick.bind(this);
@@ -121,8 +122,21 @@ class Game extends Component {
         return height;
     }
 
+    calculateActualBirdHeight() {
+        if (!this.playfield || !this.birdRef) {
+            return 50;
+        }
+
+        const playField = this.playfield.getBoundingClientRect()
+        const birdBox = this.birdRef.getBoundingClientRect()
+
+        const birdMid = birdBox.bottom;// - (birdBox.height / 2);
+        return Math.floor(((playField.height - birdMid) / playField.height) * 100)
+    }
+
     calculateCollision() {
-        const height = this.calculateBirdHeight();
+        const height = this.calculateActualBirdHeight();
+        const playfieldHeight = (this.playfield && this.playfield.getBoundingClientRect().height) || 100;
         const _this = this;
 
         if (height >= 100 || height <= 0) {
@@ -135,8 +149,14 @@ class Game extends Component {
             pipe.lastPosition > this.BirdRight && pipe.position <= this.BirdRight
         ));
 
+        const birdTop = ((height / 100) * playfieldHeight) + 30;
+        const birdBottom = ((height / 100) * playfieldHeight) - 30;
+
         pipes.forEach(pipe => {
-            if (Math.abs(height - pipe.height) > (pipe.gap / 2)) {
+            const pipeTop = ((pipe.height + (pipe.gap / 2)) / 100) * playfieldHeight;
+            const pipeBottom = ((pipe.height - (pipe.gap / 2)) / 100) * playfieldHeight;
+
+            if (birdTop > pipeTop || birdBottom < pipeBottom) {
                 _this.endGame({
                     birdHeight: height,
                     crashed: true
@@ -235,10 +255,13 @@ class Game extends Component {
 
                 <Pipes pipes={this.state.pipes}/>
                 <Bird height={birdHeight}
+                      innerRef={r => this.birdRef = r}
                       idle={!this.state.started}
                       splat={this.state.crashed}
                       speed={this.state.speed}
                       dead={this.state.gameOver}/>
+
+                <div className={'bird bird-debug'} style={{ bottom: `${this.calculateActualBirdHeight()}%` }} />
 
                 {this.state.started && <div className={'scoreboard'}>
                     <div className={'score'}>Score: {this.state.score}</div>
