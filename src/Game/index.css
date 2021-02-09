@@ -20,6 +20,13 @@
     color: white;
 }
 
+.game-over {
+    top: 100px;
+    left: 25%;
+    right: 25%;
+    position: absolute;
+}
+
 .pipe {
     position: absolute;
     top: 0;
@@ -72,10 +79,19 @@
 .scoreboard {
     position: absolute;
     top: 0;
-    width: 300px;
+    left: 25%;
+    right: 25%;
     background-color: rgba(0,0,0,0.2);
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     padding: 0.5rem 1rem;
     font-size: 1.8rem;
+}
+
+.game-area button {
+    border-radius: 1rem;
+    border: 0.5rem solid pink;
+    background: linear-gradient(to bottom, red, darkred);
+    width: auto;
+    margin: 0 auto;
 }

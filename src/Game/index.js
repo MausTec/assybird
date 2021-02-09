@@ -4,6 +4,8 @@ import './index.css'
 import Pipes from "./Pipes";
 import Bird from "./Bird";
 import backgroundImage from '../assets/assy-background.png'
+import VibratorSearchButton from "../Buttplug/VibratorSearchButton";
+import VibratorControls from "../Buttplug/VibratorControls";
 
 class Game extends Component {
     static contextType = ReadingsContext;
@@ -226,10 +228,10 @@ class Game extends Component {
                   style={{ opacity: 1 - (this.state.konamiIndex * 0.04), background }}
             >
                 {this.state.konami && <pre className={'debug'}>
-                {JSON.stringify(lastReading, undefined, 2)}
+                    {JSON.stringify(lastReading, undefined, 2)}
                     <br/>
                     {JSON.stringify({...this.state, props: this.props}, undefined, 2)}
-            </pre>}
+                </pre>}
 
                 <Pipes pipes={this.state.pipes}/>
                 <Bird height={birdHeight}
@@ -245,9 +247,14 @@ class Game extends Component {
 
                 {this.state.gameOver && <div className={'game-over'}>
                     <div>Game Over :(</div>
-                    <a href={'#'} onClick={this.handleStartClick}>Start!</a>
+                    <button type={'button'} onClick={this.handleStartClick}>Start!</button>
                 </div>}
-                {!this.state.started && <a href={'#'} onClick={this.handleStartClick}>Start!</a>}
+                {!this.state.started && <div className={'game-over'}>
+                    <button type={'button'} onClick={this.handleStartClick}>Start!</button>
+                </div>}
+
+                <VibratorSearchButton />
+                <VibratorControls speed={this.state.gameOver ? 0 : (this.state.speed - 1) / 2} />
             </main>
         )
     }

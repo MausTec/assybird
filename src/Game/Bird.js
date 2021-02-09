@@ -34,7 +34,15 @@ const Bird = ({ height, idle, dead, splat, speed }) => {
 
     return (
         <div className={'bird' + (idle ? ' idle' : ' zooming')} style={{ bottom }}>
-            <img src={splat ? flatBird : dead ? deadBird : rising ? risingBird : fallingBird} width={60} height={148} style={{ transform }}/>
+            <img src={
+                splat
+                    ? flatBird
+                    : dead
+                        ? deadBird
+                        : rising
+                            ? risingBird
+                            : fallingBird
+            } width={60} height={148} style={{ transform }} />
         </div>
     )
 }

@@ -50,17 +50,26 @@ input, button {
   color: inherit;
   padding: 0.5rem 1rem;
   text-align: center;
-}
-
-input {
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border-bottom: none;
+  border-radius: 3px;
 }
 
 button {
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
   font-size: 1.8rem;
   font-weight: normal;
+  cursor: pointer;
+}
+
+form input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+}
+
+form button {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+form + div > button {
+  margin-top: 1rem;
 }
