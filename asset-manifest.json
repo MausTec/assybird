@@ -1,24 +1,28 @@
 {
   "files": {
-    "main.css": "./static/css/main.dc8f37fa.chunk.css",
-    "main.js": "./static/js/main.daafb236.chunk.js",
-    "main.js.map": "./static/js/main.daafb236.chunk.js.map",
-    "runtime-main.js": "./static/js/runtime-main.50d2b58d.js",
-    "runtime-main.js.map": "./static/js/runtime-main.50d2b58d.js.map",
-    "static/js/2.ceefd336.chunk.js": "./static/js/2.ceefd336.chunk.js",
-    "static/js/2.ceefd336.chunk.js.map": "./static/js/2.ceefd336.chunk.js.map",
-    "static/js/3.4cd3e41e.chunk.js": "./static/js/3.4cd3e41e.chunk.js",
-    "static/js/3.4cd3e41e.chunk.js.map": "./static/js/3.4cd3e41e.chunk.js.map",
+    "main.css": "./static/css/main.148b8215.chunk.css",
+    "main.js": "./static/js/main.8f494b2b.chunk.js",
+    "main.js.map": "./static/js/main.8f494b2b.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.f6e9482c.js",
+    "runtime-main.js.map": "./static/js/runtime-main.f6e9482c.js.map",
+    "static/js/2.0e093c31.chunk.js": "./static/js/2.0e093c31.chunk.js",
+    "static/js/2.0e093c31.chunk.js.map": "./static/js/2.0e093c31.chunk.js.map",
+    "static/js/3.9c5ff267.chunk.js": "./static/js/3.9c5ff267.chunk.js",
+    "6713d37a12d0481f8c0b.module.wasm": "./6713d37a12d0481f8c0b.module.wasm",
+    "static/js/3.9c5ff267.chunk.js.map": "./static/js/3.9c5ff267.chunk.js.map",
+    "static/js/4.e55dd6bb.chunk.js": "./static/js/4.e55dd6bb.chunk.js",
+    "static/js/4.e55dd6bb.chunk.js.map": "./static/js/4.e55dd6bb.chunk.js.map",
     "index.html": "./index.html",
-    "static/css/main.dc8f37fa.chunk.css.map": "./static/css/main.dc8f37fa.chunk.css.map",
-    "static/js/2.ceefd336.chunk.js.LICENSE.txt": "./static/js/2.ceefd336.chunk.js.LICENSE.txt",
+    "static/css/main.148b8215.chunk.css.map": "./static/css/main.148b8215.chunk.css.map",
+    "static/js/2.0e093c31.chunk.js.LICENSE.txt": "./static/js/2.0e093c31.chunk.js.LICENSE.txt",
     "static/media/anal-beads.2ac61e6e.png": "./static/media/anal-beads.2ac61e6e.png",
+    "static/media/assy-background.5c9c8916.png": "./static/media/assy-background.5c9c8916.png",
     "static/media/assy-drift-big.0c8edf48.png": "./static/media/assy-drift-big.0c8edf48.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.50d2b58d.js",
-    "static/js/2.ceefd336.chunk.js",
-    "static/css/main.dc8f37fa.chunk.css",
-    "static/js/main.daafb236.chunk.js"
+    "static/js/runtime-main.f6e9482c.js",
+    "static/js/2.0e093c31.chunk.js",
+    "static/css/main.148b8215.chunk.css",
+    "static/js/main.8f494b2b.chunk.js"
   ]
 }
