@@ -13,6 +13,7 @@ class Game extends Component {
     BirdRight = 15;
     MaxScore = 20;
     DecayCoefficient = 0.98;
+    FlapAmount = 20;
     PipeCollisionThreshold = 1;
 
     constructor(props) {
@@ -64,7 +65,7 @@ class Game extends Component {
 
     addPipe() {
         const {speed, ticks} = this.state;
-        const gap = (20 - speed) + Math.floor(Math.random() * (10 - speed));
+        const gap = (this.MaxScore - speed) + Math.floor(Math.random() * ((this.MaxScore / 2) - speed));
         const height = 50 + Math.floor(25 - (Math.random() * 50));
 
         let pipe = {
@@ -149,8 +150,8 @@ class Game extends Component {
             pipe.lastPosition > this.BirdRight && pipe.position <= this.BirdRight
         ));
 
-        const birdTop = ((height / 100) * playfieldHeight) + 30;
-        const birdBottom = ((height / 100) * playfieldHeight) - 30;
+        const birdTop = (((height + this.PipeCollisionThreshold) / 100) * playfieldHeight) + 30;
+        const birdBottom = (((height - this.PipeCollisionThreshold) / 100) * playfieldHeight) - 30;
 
         pipes.forEach(pipe => {
             const pipeTop = ((pipe.height + (pipe.gap / 2)) / 100) * playfieldHeight;
@@ -163,7 +164,7 @@ class Game extends Component {
                 });
             } else {
                 const score = _this.state.score + 1;
-                const speed = Math.max(1, Math.min(1 + (score / 20), 2));
+                const speed = Math.max(1, Math.min(1 + (score / this.MaxScore), 2));
                 _this.setState({score, speed});
             }
         })
@@ -185,7 +186,7 @@ class Game extends Component {
         if (this.props.offlineMode) {
             this.playfield && this.playfield.focus();
             if (this.state.birdCaptured) {
-                virtualArousal = Math.floor(virtualArousal * 0.98);
+                virtualArousal = Math.floor(virtualArousal * this.DecayCoefficient);
             }
         }
 
@@ -229,7 +230,7 @@ class Game extends Component {
             e.preventDefault();
             if (!this.state.flapDown) {
                 let {virtualArousal} = this.state;
-                virtualArousal += (20 * this.state.speed);
+                virtualArousal += (this.FlapAmount * this.state.speed);
                 this.setState({virtualArousal})
             }
         }
