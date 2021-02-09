@@ -261,7 +261,7 @@ class Game extends Component {
                       speed={this.state.speed}
                       dead={this.state.gameOver}/>
 
-                <div className={'bird bird-debug'} style={{ bottom: `${this.calculateActualBirdHeight()}%` }} />
+                { this.state.konami && <div className={'bird bird-debug'} style={{ bottom: `${this.calculateActualBirdHeight()}%` }} /> }
 
                 {this.state.started && <div className={'scoreboard'}>
                     <div className={'score'}>Score: {this.state.score}</div>
